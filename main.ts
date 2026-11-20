@@ -22,6 +22,12 @@ if (typeof parsed.url !== 'string' || !/youtube\.com\/(shorts\/|watch\?v=)|youtu
   console.error('VIDEO.json does not name a YouTube video address');
   process.exit(1);
 }
+// Hand over the bare address: share-sheet tracking params (?si=...) are
+// dropped so the gate always reads the canonical video URL.
+const clean = parsed.url.split(/[?#]/)[0];
+if (clean !== parsed.url) {
+  console.log(`tracking params dropped: ${parsed.url} -> ${clean}`);
+}
 
 mkdirSync(outputDir, { recursive: true });
 copyFileSync(source, join(outputDir, 'VIDEO.json'));
